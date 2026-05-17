@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -13,3 +14,4 @@ Route::get('/user', function (Request $request) {
 
 Route::apiResource('users', UserController::class);
 Route::apiResource('products', ProductController::class);
+Route::apiResource('orders', OrderController::class);
