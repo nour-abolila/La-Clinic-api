@@ -17,8 +17,9 @@ class UserResource extends JsonResource
         //  return parent::toArray($request);
         return [
             'id' => $this->id,
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
+            // 'first_name' => $this->first_name,
+            // 'last_name' => $this->last_name,
+            'full_name' => $this->full_name,
             'email' => $this->email,
             'created_at' => $this->created_at->format('Y-m-d H:i'),
         ];
