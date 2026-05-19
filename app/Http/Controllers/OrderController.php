@@ -25,7 +25,7 @@ class OrderController extends Controller
 
         return ApiResponse::success(
             'Order created successfully',
-            ['order' => $order]
+            ['data' => $order]
         );
     }
 }

@@ -25,7 +25,7 @@ class OrderRequest extends FormRequest
         return [
             'user_id' => 'required|exists:users,id',
             'products' => 'required|array',
-            'products.*' => 'exists:products,id',
+            'products.*' => 'exists:store_products,id',
         ];
     }
 }
