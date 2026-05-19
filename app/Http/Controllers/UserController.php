@@ -14,10 +14,10 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::paginate(10);
+        $users = User::select('id', 'first_name', 'last_name', 'email', 'created_at')->paginate($this->paginate);
         return ApiResponse::success(
             'Users retrieved successfully',
-            ['users' => UserResource::collection($users)]
+            ['users' => $users]
         );
     }
 
@@ -28,7 +28,7 @@ class UserController extends Controller
         $user = User::create($request->validated());
         return ApiResponse::success(
             'User created successfully',
-            ['user' => new UserResource($user)]
+            ['data' => new UserResource($user)]
         );
     }
 
@@ -38,7 +38,7 @@ class UserController extends Controller
     {
         return ApiResponse::success(
             'User show successfully',
-            ['user' => new UserResource($user)]
+            ['data' => new UserResource($user)]
         );
     }
 
@@ -49,7 +49,7 @@ class UserController extends Controller
         $user->update($request->validated());
         return ApiResponse::success(
             'User updated successfully',
-            ['user' => new UserResource($user)]
+            ['data' => new UserResource($user)]
         );
     }
 
