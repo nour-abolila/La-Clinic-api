@@ -13,7 +13,7 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasApiTokens;
 
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = ['first_name', 'last_name', 'email', 'password'];
 
 
     protected $hidden = ['password', 'remember_token'];
@@ -32,5 +32,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class);
     }
-
 }
