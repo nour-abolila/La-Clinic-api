@@ -12,10 +12,10 @@ class ProductController extends Controller
 
     public function index()
     {
-        $products = Product::paginate(10);
+        $products = Product::select('id', 'name', 'description', 'price')->paginate($this->paginate);
         return ApiResponse::success(
             'products retrieved successfully',
-            ['products' => ProductResource::collection($products)]
+            ['products' => $products]
         );
     }
 
@@ -25,7 +25,7 @@ class ProductController extends Controller
     {
         return ApiResponse::success(
             'product show successfully',
-            ['product' => new ProductResource($product)]
+            ['data' => new ProductResource($product)]
         );
     }
 }
