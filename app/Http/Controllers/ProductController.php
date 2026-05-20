@@ -28,4 +28,14 @@ class ProductController extends Controller
             ['data' => new ProductResource($product)]
         );
     }
+
+
+
+    public function destroy(Product $product)
+    {
+        $product->delete();
+        return ApiResponse::success(
+            'product deleted successfully',
+        );
+    }
 }
