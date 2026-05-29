@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -13,11 +13,9 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasApiTokens;
 
-    protected $fillable = ['first_name', 'last_name', 'email', 'password'];
-
+    protected $fillable = ['first_name', 'last_name', 'email', 'password', 'phone_number', 'email_verified_at', 'role'];
 
     protected $hidden = ['password', 'remember_token'];
-
 
     protected function casts(): array
     {
@@ -28,14 +26,20 @@ class User extends Authenticatable
     }
 
 
-    public function orders()
+    public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
     }
 
 
-    public function getFullNameAttribute() // Accessor for full name
+    public function reviews(): HasMany
     {
-        return $this->first_name . ' ' . $this->last_name;
+        return $this->hasMany(Review::class);
+    }
+
+
+    public function otpVerifications(): HasMany
+    {
+        return $this->hasMany(OtpVerification::class);
     }
 }
