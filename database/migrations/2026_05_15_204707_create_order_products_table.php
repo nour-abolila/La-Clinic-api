@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('order_products', function (Blueprint $table) {
             $table->id();
-            // $table->foreignId('order_id')->constrained()->cascadeOnDelete();
             $table->foreignId('order_id')->references('id')->on('orders')->onDelete('cascade');
-            $table->foreignId('product_id')->constrained('store_products')->cascadeOnDelete(); // Updated to reference 'store_products' table
+            $table->foreignId('product_id')->constrained('products')->cascadeOnDelete(); // Updated to reference 'products' table
             $table->timestamps();
         });
     }
