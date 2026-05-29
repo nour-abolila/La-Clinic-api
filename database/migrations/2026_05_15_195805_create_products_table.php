@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('name');
             $table->longText('description');
             $table->decimal('price', 8, 2);
-            $table->string('image')->nullable();
             $table->integer('stock')->default(0);
             $table->decimal('rating', 3, 2)->default(0);
             $table->enum('status', ['active', 'inactive', 'draft'])->default('draft');

@@ -12,14 +12,19 @@ class ProductResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request)
+    public function toArray(Request $request): array
     {
-        //  return parent::toArray($request);
+        // return parent::toArray($request);
         return [
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
             'price' => $this->price,
+            'stock' => $this->stock,
+            'is_in_stock' => $this->isInStock(),
+            'rating' => $this->rating,
+            'status' => $this->status,
+            'category_id' => $this->category_id,
         ];
     }
 }

@@ -16,7 +16,6 @@ class Product extends Model
         'name',
         'description',
         'price',
-        'image',
         'stock',
         'rating',
         'status',
@@ -38,7 +37,6 @@ class Product extends Model
     }
 
 
-
     public function orders(): BelongsToMany
     {
         return $this->belongsToMany(Order::class, 'order_products');
@@ -48,5 +46,17 @@ class Product extends Model
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
+    }
+
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
+
+
+    public function isInStock(): bool
+    {
+        return $this->stock > 0;
     }
 }
