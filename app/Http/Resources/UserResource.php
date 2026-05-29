@@ -9,19 +9,17 @@ class UserResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
      */
-    public function toArray(Request $request)
+    public function toArray(Request $request): array
     {
-        //  return parent::toArray($request);
         return [
             'id' => $this->id,
-            // 'first_name' => $this->first_name,
-            // 'last_name' => $this->last_name,
-            'full_name' => $this->full_name,
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
             'email' => $this->email,
-            'created_at' => $this->created_at->format('Y-m-d H:i'),
+            'phone_number' => $this->phone_number,
+            // 'is_verified' => $this->email_verified_at !== null,
+            'user_created_at' => $this->created_at->format('Y-m-d H:i:s'),
         ];
     }
 }
