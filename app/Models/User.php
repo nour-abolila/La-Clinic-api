@@ -42,4 +42,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(OtpVerification::class);
     }
+
+    public function cart()
+    {
+        return $this->hasOne(Cart::class);
+    }
 }
