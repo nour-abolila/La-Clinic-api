@@ -15,7 +15,7 @@ class OtpMail extends Mailable
 
     public User $user;
     public string $otp;
-
+    // هناخد اليوزر والاو تي بي في الكونستركتور عشان نستخدمهم في الايميل
     public function __construct(User $user, string $otp)
     {
         $this->user = $user;
@@ -33,8 +33,8 @@ class OtpMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.otp',    // ده الملف اللي فيه الـ HTML
-            with: ['otp' => $this->otp], // مررنا الكود للـ view 
+            view: 'emails.otp',
+            with: ['otp' => $this->otp],
         );
     }
 

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Product extends Model
 {
@@ -17,7 +18,6 @@ class Product extends Model
         'description',
         'price',
         'stock',
-        'rating',
         'status',
         'category_id',
     ];
@@ -25,7 +25,6 @@ class Product extends Model
     protected $casts = [
         'price' => 'float',
         'stock' => 'integer',
-        'rating' => 'decimal:2',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -36,25 +35,13 @@ class Product extends Model
         return $this->belongsTo(Category::class, 'category_id');
     }
 
-
-    public function orders(): BelongsToMany
-    {
-        return $this->belongsToMany(Order::class, 'order_products');
-    }
-
-
-    public function reviews(): HasMany
-    {
-        return $this->hasMany(Review::class);
-    }
-
-
+    // local scope to filter active products
     public function scopeActive($query)
     {
         return $query->where('status', 'active');
     }
 
-
+    // method to check if product is in stock
     public function isInStock(): bool
     {
         return $this->stock > 0;
@@ -63,5 +50,17 @@ class Product extends Model
     public function cartItems()
     {
         return $this->hasMany(CartItem::class);
+    }
+
+
+    protected static function booted()
+    {
+        static::creating(function ($product) {
+            $product->slug = Str::slug($product->name);
+        });
+
+        static::updating(function ($product) {
+            $product->slug = Str::slug($product->name);
+        });
     }
 }

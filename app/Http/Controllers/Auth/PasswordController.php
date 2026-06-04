@@ -50,14 +50,17 @@ class PasswordController extends Controller
     }
 
 
-    public function resendOtp(ForgotPasswordRequest $request)
-    {
-        $user = $this->passwordService->forgetPassword($request->email);
 
-        $otp = $this->otpService->generateOtpcode($user);
 
-        $this->otpService->sendOtp($user, $otp);
+    
+    // public function resendOtp(ForgotPasswordRequest $request)
+    // {
+    //     $user = $this->passwordService->forgetPassword($request->email);
 
-        return ApiResponse::success('OTP resent to your email', ['user_id' => $user->id]);
-    }
+    //     $otp = $this->otpService->generateOtpcode($user);
+
+    //     $this->otpService->sendOtp($user, $otp);
+
+    //     return ApiResponse::success('OTP resent to your email', ['user_id' => $user->id]);
+    // }
 }

@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->longText('description');
-            $table->decimal('price', 8, 2);
-            $table->integer('stock')->default(0);
-            $table->decimal('rating', 3, 2)->default(0);
-            $table->enum('status', ['active', 'inactive', 'draft'])->default('draft');
+            $table->string('slug')->unique();
+            $table->text('description');
+            $table->decimal('price');
+            $table->integer('stock')->default(0);  //  عدد القطع المناحة هستخدمة فى حالة الاوردر
+            // $table->decimal('rating', 3, 2)->default(0);   in review table 
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->foreignId('category_id')->constrained('categories')->cascadeOnDelete();
             $table->timestamps();
         });

@@ -30,13 +30,7 @@ class AuthController extends Controller
             $otp = $this->otpService->generateOtpCode($user);
             $this->otpService->sendOtp($user, $otp);
 
-            return ApiResponse::success(
-                'User registered successfully. Please verify your email.',
-                [
-                    'user' => new UserResource($user),
-                    'message' => 'OTP has been sent to your email. Please verify to complete registration.',
-                ]
-            );
+            return ApiResponse::success('OTP has been sent to your email. Please verify to complete registration.');
         } catch (\Exception $e) {
             return ApiResponse::error('Registration failed');
         }

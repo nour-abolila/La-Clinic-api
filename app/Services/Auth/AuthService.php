@@ -26,7 +26,7 @@ class AuthService
         return $user;
     }
 
-
+    // لازم افعل الايميل قبل ما اقدر اسجل دخول
     public function verifyEmail(User $user)
     {
         $user->update([

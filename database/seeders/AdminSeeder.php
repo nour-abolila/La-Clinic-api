@@ -13,7 +13,7 @@ class AdminSeeder extends Seeder
      * Run the database seeds.
      */
     public function run(): void
-    {
+    {   // لازم امنع التكرار في حالة تشغيل السييدر أكتر من مرة
         User::updateOrCreate(
             ['email' => 'admin@gmail.com'],
             [

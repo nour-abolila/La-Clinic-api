@@ -27,10 +27,9 @@ class OtpVerification extends Model
         'updated_at' => 'datetime',
     ];
 
-   
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
-
 }

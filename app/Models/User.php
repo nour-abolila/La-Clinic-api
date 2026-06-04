@@ -25,20 +25,7 @@ class User extends Authenticatable
         ];
     }
 
-
-    public function orders(): HasMany
-    {
-        return $this->hasMany(Order::class);
-    }
-
-
-    public function reviews(): HasMany
-    {
-        return $this->hasMany(Review::class);
-    }
-
-
-    public function otpVerifications(): HasMany
+    public function otpVerifications()
     {
         return $this->hasMany(OtpVerification::class);
     }

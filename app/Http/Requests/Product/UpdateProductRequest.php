@@ -28,7 +28,7 @@ class UpdateProductRequest extends FormRequest
             'description' => 'sometimes|nullable|string',
             'price' => 'sometimes|numeric|min:0',
             'stock' => 'sometimes|integer|min:0',
-            'rating' => 'sometimes|nullable|numeric|min:0|max:5',
+            // 'rating' => 'sometimes|nullable|numeric|min:0|max:5',
             'status' => 'sometimes|in:active,inactive,draft',
             'category_id' => 'sometimes|exists:categories,id',
         ];

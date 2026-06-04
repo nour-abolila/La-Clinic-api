@@ -17,23 +17,15 @@ class OtpService
 
     public function generateOtpCode(User $user): string
     {
-        $existingOtp = OtpVerification::where('user_id', $user->id)
-            ->latest()
-            ->first();
+        $existingOtp = OtpVerification::where('user_id', $user->id)->latest()->first();
 
-        if (
-            $existingOtp &&
-            $existingOtp->created_at
-            ->addMinutes(self::RESEND_MINUTES)
-            ->isAfter(now())
-        ) {
+        // منع اليوزر من طلب OTP جديد إذا كان لديه OTP غير منتهي الصلاحية تم إنشاؤه مؤخرًا   
+        if ($existingOtp && $existingOtp->created_at->addMinutes(self::RESEND_MINUTES)->isAfter(now())) {
             throw new \Exception('Please wait before requesting another OTP.');
         }
 
-        // حذف أي OTP قديم
         OtpVerification::where('user_id', $user->id)->delete();
 
-        // توليد كود عشوائي
         $otp = (string) random_int(100000, 999999);
 
         OtpVerification::create([
@@ -56,9 +48,7 @@ class OtpService
 
     public function verifyOtp(User $user, string $otpCode): bool
     {
-        $otp = OtpVerification::where('user_id', $user->id)
-            ->latest()
-            ->first();
+        $otp = OtpVerification::where('user_id', $user->id)->latest()->first();
 
         if (!$otp) {
             return false;
