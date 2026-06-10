@@ -7,18 +7,29 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Password\ForgotPasswordRequest;
 use App\Http\Requests\Password\ResetPasswordRequest;
 use App\Http\Requests\Password\VerifyPasswordRequest;
+use App\Models\User;
 use App\Services\Auth\OtpService;
 use App\Services\Auth\PasswordService;
+use Illuminate\Support\Facades\Hash;
 
 
 
 class PasswordController extends Controller
 {
-    public function __construct(protected PasswordService $passwordService, protected OtpService $otpService) {}
+    public function __construct(protected OtpService $otpService) {}
+
+    private function getUserByEmail(string $email): User
+    {
+        return User::firstWhere('email', $email);
+    }
+
+
 
     public function forgetPassword(ForgotPasswordRequest $request)
     {
-        $user = $this->passwordService->forgetPassword($request->email);
+        $data = $request->validated();
+
+        $user = $this->getUserByEmail($data['email']);
 
         $otp = $this->otpService->generateOtpCode($user);
 
@@ -28,9 +39,12 @@ class PasswordController extends Controller
     }
 
 
+
     public function verifyPassword(VerifyPasswordRequest $request)
     {
-        $user = $this->passwordService->forgetPassword($request->email); // بجيب اليوزر من ال Auth service عن طريق الايميل
+        $data = $request->validated();
+
+        $user = $this->getUserByEmail($data['email']);
 
         if (!$this->otpService->verifyOtp($user, $request->input('otp_code'))) {
             return ApiResponse::error('Invalid or expired OTP', 422);
@@ -40,27 +54,38 @@ class PasswordController extends Controller
     }
 
 
+
     public function resetPassword(ResetPasswordRequest $request)
     {
-        $user = $this->passwordService->forgetPassword($request->email);
+        $data = $request->validated();
 
-        $this->passwordService->resetPassword($user, $request->password);
+        $user = $this->getUserByEmail($data['email']);
+
+        $user->update([
+            'password' => Hash::make($data['password']),
+        ]);
 
         return ApiResponse::success('Password has been reset successfully.');
     }
 
 
 
+    public function resendOtp(ForgotPasswordRequest $request)
+    {
+        $data = $request->validated();
 
-    
-    // public function resendOtp(ForgotPasswordRequest $request)
-    // {
-    //     $user = $this->passwordService->forgetPassword($request->email);
+        $user = $this->getUserByEmail($data['email']);
 
-    //     $otp = $this->otpService->generateOtpcode($user);
+        $otp = $this->otpService->generateOtpCode($user);
+        if (!$otp) {
+            return ApiResponse::error(
+                'Please wait 2 minutes before requesting another OTP',
+                429
+            );
+        }
 
-    //     $this->otpService->sendOtp($user, $otp);
+        $this->otpService->sendOtp($user, $otp);
 
-    //     return ApiResponse::success('OTP resent to your email', ['user_id' => $user->id]);
-    // }
+        return ApiResponse::success('OTP resent to your email', ['user_id' => $user->id]);
+    }
 }
