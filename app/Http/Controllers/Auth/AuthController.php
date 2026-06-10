@@ -12,26 +12,38 @@ use App\Http\Requests\PasswordReset\ForgotPasswordRequest;
 use App\Http\Requests\PasswordReset\ResetPasswordRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use App\Services\Auth\OtpService;
 use App\Services\Auth\AuthService;
+use App\Services\Auth\OtpService;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
+
 
 class AuthController extends Controller
 {
 
-    public function __construct(protected AuthService $authService, protected OtpService $otpService) {}
+    public function __construct(protected OtpService $otpService) {}
 
 
     public function register(RegisterRequest $request)
     {
         try {
-            $user = $this->authService->register($request->validated());
+            $data = $request->validated();
+
+            $data['password'] = Hash::make($data['password']);
+
+            $user = User::create($data);
+
             $otp = $this->otpService->generateOtpCode($user);
+
             $this->otpService->sendOtp($user, $otp);
 
             return ApiResponse::success('OTP has been sent to your email. Please verify to complete registration.');
         } catch (\Exception $e) {
+
             return ApiResponse::error('Registration failed');
         }
     }
@@ -45,9 +57,11 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid or expired OTP'], 422);
         }
 
-        $this->authService->verifyEmail($user);
+        $user->update([
+            'email_verified_at' => Carbon::now(),
+        ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = Auth::login($user);
 
         return ApiResponse::success(
             'Email verified successfully.',
@@ -62,35 +76,40 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request)
     {
-        $result = $this->authService->login($request->validated());
+        $credentials = $request->validated();
 
-        if (!$result) {
+        $user = User::where('email', $credentials['email'])->first();
+
+        if (!$user) {
             return ApiResponse::error('Invalid credentials');
         }
 
-        if ($result === 'email_not_verified') {
-            return ApiResponse::error('Email not verified. Please verify your email before logging in.');
+        if (!$user->email_verified_at) {
+            return ApiResponse::error(
+                'Email not verified. Please verify your email before logging in.'
+            );
+        }
+
+        if (!$token = Auth::attempt($credentials)) {
+            return ApiResponse::error('Invalid credentials');
         }
 
         return ApiResponse::success(
             'Login successful',
             [
-                'user' => new UserResource($result['user']),
-                'access_token' => $result['access_token']
-            ],
+                'user' => new UserResource($user),
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+            ]
         );
     }
 
 
 
-    public function logout(Request $request): JsonResponse
+    public function logout(Request $request)
     {
-        try {
-            $this->authService->logout($request->user());
+        JWTAuth::invalidate(JWTAuth::getToken());
 
-            return ApiResponse::success('Logout successful');
-        } catch (\Exception $e) {
-            return ApiResponse::error('Logout failed');
-        }
+        return ApiResponse::success('Logout successful');
     }
 }
