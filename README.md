@@ -1,59 +1,120 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🛒 La Clinic - Laravel E-Commerce API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 📌 Project Overview
 
-## About Laravel
+This is a Laravel-based E-Commerce API project built with a clean and scalable architecture.  
+The project focuses on RESTful API development and provides core e-commerce features such as authentication, OTP verification, product management, cart system, and password reset.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+The system uses JWT authentication for secure access and includes email verification via OTP.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🚀 Features
 
-## Learning Laravel
+### 🔐 Authentication System
+- User registration with OTP email verification
+- Login using JWT authentication
+- Logout with token invalidation
+- Password reset via OTP
+- Resend OTP with rate limiting
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 🧑‍💻 User Management
+- User registration with hashed passwords
+- Email verification before login
+- Role-based structure (ready for admin/user roles)
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 📦 Product Management
+- Product CRUD operations
+- Product fields: name, description, price, stock, rating, status
+- Category-based organization
+- Active scope filtering
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 📂 Category System
+- Categories with slug generation
+- Auto slug generation using Laravel Model Events
+- One-to-many relationship with products
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 🛒 Cart System
+- Add products to cart
+- Increase quantity if product already exists
+- Remove products from cart
+- Automatic total price calculation
+- Cart and cart items relationships
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 📧 OTP System
+- Secure OTP generation for email verification
+- OTP expiration handling
+- Attempt limitation for security
+- Resend OTP rate limiting
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🏗️ Architecture
 
-## License
+The project follows a Service-Oriented Architecture (SOA):
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- Controllers → Handle HTTP requests
+- Services → Business logic layer
+- Models → Database layer
+- Form Requests → Validation
+- Resources → API response formatting
+
+This ensures:
+- Clean code structure
+- Separation of concerns
+- Scalability
+
+---
+
+## 🧰 Tech Stack
+
+- Laravel 12+
+- PHP 8+
+- MySQL
+- JWT Authentication
+- Laravel Mail (SMTP)
+- Eloquent ORM
+
+---
+
+## 🔐 Authentication Flow
+
+1. User registers
+2. OTP is sent to email
+3. User verifies OTP
+4. Account is activated
+5. User logs in using JWT
+
+---
+
+## 📊 Database Structure
+
+- users
+- products
+- categories
+- carts
+- cart_items
+- otp_verifications
+
+---
+
+## ⚙️ Installation
+
+```bash
+git clone <repo-url>
+cd project-folder
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan serve
