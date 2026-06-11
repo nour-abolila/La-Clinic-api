@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
@@ -38,7 +39,8 @@ Route::apiResource('categories', CategoryController::class)
 Route::apiResource('products', ProductController::class)
     ->only(['index', 'show']);
 
-
+Route::apiResource('doctors', DoctorController::class)
+    ->only(['index , show']);
 
 // Admin Routes
 
@@ -48,6 +50,9 @@ Route::middleware(['auth:api', 'admin'])->group(function () {
         ->except(['index', 'show']);
 
     Route::apiResource('products', ProductController::class)
+        ->except(['index', 'show']);
+
+    Route::apiResource('doctors', DoctorController::class)
         ->except(['index', 'show']);
 });
 
