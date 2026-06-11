@@ -37,6 +37,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasOne(Cart::class);
     }
 
+    public function doctorProfile()
+    {
+        return $this->hasOne(DoctorProfile::class);
+    }
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
