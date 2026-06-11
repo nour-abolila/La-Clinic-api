@@ -50,30 +50,55 @@ class OtpService
     {
         $otp = OtpVerification::where('user_id', $user->id)->first();
 
-        if (!$otp) {
-            return false;
+        switch (true) {
+            case !$otp:
+                return false;
+
+            case $otp->attempts >= self::MAX_ATTEMPTS:
+                $otp->delete();
+                return false;
+
+            case Carbon::now()->greaterThan($otp->expires_at):
+                $otp->delete();
+                return false;
+
+            case ($otpCode !== $otp->otp_code):
+                $otp->increment('attempts');
+                return false;
+
+            default:
+                $otp->update([
+                    'verified_at' => now(),
+                ]);
+
+                $otp->delete();
+                return true;
         }
+        
+        // if (!$otp) {
+        //     return false;
+        // }
 
-        if ($otp->attempts >= self::MAX_ATTEMPTS) {
-            $otp->delete();
-            return false;
-        }
+        // if ($otp->attempts >= self::MAX_ATTEMPTS) {
+        //     $otp->delete();
+        //     return false;
+        // }
 
-        if (Carbon::now()->greaterThan($otp->expires_at)) {
-            $otp->delete();
-            return false;
-        }
+        // if (Carbon::now()->greaterThan($otp->expires_at)) {
+        //     $otp->delete();
+        //     return false;
+        // }
 
-        if (($otpCode !== $otp->otp_code)) {
-            $otp->increment('attempts');
-            return false;
-        }
+        // if (($otpCode !== $otp->otp_code)) {
+        //     $otp->increment('attempts');
+        //     return false;
+        // }
 
-        $otp->update([
-            'verified_at' => now(),
-        ]);
+        // $otp->update([
+        //     'verified_at' => now(),
+        // ]);
 
-        $otp->delete();
-        return true;
+        // $otp->delete();
+        // return true;
     }
 }
