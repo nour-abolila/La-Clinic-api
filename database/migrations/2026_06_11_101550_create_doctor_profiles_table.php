@@ -16,7 +16,11 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('specialization');
             $table->integer('years_of_experience');
+            $table->decimal('session_price', 8, 2);
             $table->string('bio')->nullable();
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
+            $table->json('working_days')->nullable();
             $table->timestamps();
         });
     }
