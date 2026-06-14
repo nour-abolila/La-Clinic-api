@@ -14,7 +14,7 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::select('id', 'name', 'slug', 'description')->get();
-        return ApiResponse::success(
+        return success(
             'Categories retrieved successfully',
             ['categories' => $categories]
         );
@@ -24,7 +24,7 @@ class CategoryController extends Controller
     public function store(StoreCategoryRequest $request)
     {
         $category = Category::create($request->validated());
-        return ApiResponse::success(
+        return success(
             'Category created successfully',
             new CategoryResource($category),
         );
@@ -33,7 +33,7 @@ class CategoryController extends Controller
 
     public function show(Category $category)
     {
-        return ApiResponse::success(
+        return success(
             'Category show successfully',
             ['data' => new CategoryResource($category)]
         );
@@ -43,7 +43,7 @@ class CategoryController extends Controller
     public function update(UpdateCategoryRequest $request, Category $category)
     {
         $category->update($request->validated());
-        return ApiResponse::success(
+        return success(
             'Category updated successfully',
             ['data' => new CategoryResource($category)]
         );
@@ -53,6 +53,6 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         $category->delete();
-        return ApiResponse::success('Category deleted successfully');
+        return success('Category deleted successfully');
     }
 }

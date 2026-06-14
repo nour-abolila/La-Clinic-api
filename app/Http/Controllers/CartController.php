@@ -17,7 +17,7 @@ class CartController extends Controller
     {
         $cart = $this->cartService->getCart(auth()->user());
 
-        return ApiResponse::success('Cart retrieved successfully', new CartResource($cart));
+        return success('Cart retrieved successfully', new CartResource($cart));
     }
 
 
@@ -25,7 +25,7 @@ class CartController extends Controller
     {
         $cart = $this->cartService->addToCart(auth()->user(), $request->validated());
 
-        return ApiResponse::success('Product added to cart', new CartResource($cart->load('items.product')));
+        return success('Product added to cart', new CartResource($cart->load('items.product')));
     }
 
 
@@ -33,6 +33,6 @@ class CartController extends Controller
     {
         $this->cartService->removeFromCart(auth()->user(), $productId);
 
-        return ApiResponse::success('Product removed successfully');
+        return success('Product removed successfully');
     }
 }

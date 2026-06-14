@@ -35,7 +35,7 @@ class PasswordController extends Controller
 
         $this->otpService->sendOtp($user, $otp);
 
-        return ApiResponse::success('OTP sent to your email', ['user_id' => $user->id]);
+        return success('OTP sent to your email', ['user_id' => $user->id]);
     }
 
 
@@ -47,10 +47,10 @@ class PasswordController extends Controller
         $user = $this->getUserByEmail($data['email']);
 
         if (!$this->otpService->verifyOtp($user, $request->input('otp_code'))) {
-            return ApiResponse::error('Invalid or expired OTP', 422);
+            return error('Invalid or expired OTP', 422);
         }
 
-        return ApiResponse::success('OTP verified successfully. You can now reset your password.');
+        return success('OTP verified successfully. You can now reset your password.');
     }
 
 
@@ -65,7 +65,7 @@ class PasswordController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
-        return ApiResponse::success('Password has been reset successfully.');
+        return success('Password has been reset successfully.');
     }
 
 
@@ -78,7 +78,7 @@ class PasswordController extends Controller
 
         $otp = $this->otpService->generateOtpCode($user);
         if (!$otp) {
-            return ApiResponse::error(
+            return error(
                 'Please wait 2 minutes before requesting another OTP',
                 429
             );
@@ -86,6 +86,6 @@ class PasswordController extends Controller
 
         $this->otpService->sendOtp($user, $otp);
 
-        return ApiResponse::success('OTP resent to your email', ['user_id' => $user->id]);
+        return success('OTP resent to your email', ['user_id' => $user->id]);
     }
 }

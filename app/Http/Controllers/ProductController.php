@@ -14,7 +14,7 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::with('category')->active()->latest()->get();
-        return ApiResponse::success(
+        return success(
             'Products retrieved successfully',
             ProductResource::collection($products)
         );
@@ -24,7 +24,7 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request, Product $product)
     {
         $product = Product::create($request->validated());
-        return ApiResponse::success(
+        return success(
             'Product created successfully',
             new ProductResource($product),
         );
@@ -33,7 +33,7 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        return ApiResponse::success(
+        return success(
             'Product retrieved successfully',
             new ProductResource($product)
         );
@@ -43,7 +43,7 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, Product $product)
     {
         $product->update($request->validated());
-        return ApiResponse::success(
+        return success(
             'Product updated successfully',
             new ProductResource($product)
         );
@@ -53,7 +53,7 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $product->delete();
-        return ApiResponse::success(
+        return success(
             'Product deleted successfully'
         );
     }

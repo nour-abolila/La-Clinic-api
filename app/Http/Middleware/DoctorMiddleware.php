@@ -20,7 +20,7 @@ class DoctorMiddleware
         if (
             auth()->user()->role !== 'doctor'
         ) {
-            return ApiResponse::error('Unauthorized', 403);
+            return error('Unauthorized', 403);
         }
         return $next($request);;
     }

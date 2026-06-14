@@ -19,7 +19,7 @@ class DoctorController extends Controller
     {
         $doctors = DoctorProfile::with('user')->get();
 
-        return ApiResponse::success(
+        return success(
             'Doctors retrieved successfully',
             DoctorResource::collection($doctors)
         );
@@ -28,7 +28,7 @@ class DoctorController extends Controller
 
     public function show(DoctorProfile $doctor)
     {
-        return ApiResponse::success(
+        return success(
             'Doctor retrieved successfully',
             new DoctorResource($doctor->load('user'))
         );
@@ -63,7 +63,7 @@ class DoctorController extends Controller
 
         Mail::to($user->email)->send(new DoctorMail($user, $generatedPassword));
 
-        return ApiResponse::success(
+        return success(
             'Doctor added successfully',
             new DoctorResource($doctor->load('user'))
         );
@@ -91,7 +91,7 @@ class DoctorController extends Controller
             'working_days'         => $data['working_days'] ?? $doctor->working_days,
         ]);
 
-        return ApiResponse::success(
+        return success(
             'Doctor updated successfully',
             new DoctorResource(
                 $doctor->fresh()->load('user')
@@ -102,7 +102,8 @@ class DoctorController extends Controller
     public function destroy(DoctorProfile $doctor)
     {
         $doctor->user->delete();
-        return ApiResponse::success(
+        $doctor->delete(); 
+        return success(
             'Doctor deleted successfully'
         );
     }
@@ -113,7 +114,7 @@ class DoctorController extends Controller
     {
         $doctor = auth()->user()->doctorProfile()->with('user')->first();
 
-        return ApiResponse::success(
+        return success(
             'Profile retrieved successfully',
             new DoctorResource($doctor)
         );

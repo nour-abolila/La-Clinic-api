@@ -41,10 +41,10 @@ class AuthController extends Controller
 
             $this->otpService->sendOtp($user, $otp);
 
-            return ApiResponse::success('OTP has been sent to your email. Please verify to complete registration.');
+            return success('OTP has been sent to your email. Please verify to complete registration.');
         } catch (\Exception $e) {
 
-            return ApiResponse::error('Registration failed');
+            return error('Registration failed');
         }
     }
 
@@ -63,7 +63,7 @@ class AuthController extends Controller
 
         $token = Auth::login($user);
 
-        return ApiResponse::success(
+        return success(
             'Email verified successfully.',
             [
                 'user' => new UserResource($user),
@@ -81,20 +81,20 @@ class AuthController extends Controller
         $user = User::where('email', $credentials['email'])->first();
 
         if (!$user) {
-            return ApiResponse::error('Invalid credentials');
+            return error('Invalid credentials');
         }
 
         if (!$user->email_verified_at) {
-            return ApiResponse::error(
+            return error(
                 'Email not verified. Please verify your email before logging in.'
             );
         }
 
         if (!$token = Auth::attempt($credentials)) {
-            return ApiResponse::error('Invalid credentials');
+            return error('Invalid credentials');
         }
 
-        return ApiResponse::success(
+        return success(
             'Login successful',
             [
                 'user' => new UserResource($user),
@@ -110,6 +110,6 @@ class AuthController extends Controller
     {
         JWTAuth::invalidate(JWTAuth::getToken());
 
-        return ApiResponse::success('Logout successful');
+        return success('Logout successful');
     }
 }
