@@ -39,8 +39,11 @@ Route::apiResource('categories', CategoryController::class)
 Route::apiResource('products', ProductController::class)
     ->only(['index', 'show']);
 
-Route::apiResource('doctors', DoctorController::class)
-    ->only(['index , show']);
+Route::get('/doctors', [DoctorController::class, 'index']);
+
+Route::get('/doctors/{doctor}', [DoctorController::class, 'show']);
+
+
 
 // Admin Routes
 
@@ -51,16 +54,36 @@ Route::middleware(['auth:api', 'admin'])->group(function () {
 
     Route::apiResource('products', ProductController::class)
         ->except(['index', 'show']);
-
-    Route::apiResource('doctors', DoctorController::class)
-        ->except(['index', 'show']);
 });
+
+
+Route::middleware(['auth:api', 'admin'])->controller(DoctorController::class)->group(function () {
+
+    Route::post('/doctors', 'store');
+
+    Route::patch('/doctors/{doctor}', 'update');
+
+    Route::delete('/doctors/{doctor}', 'destroy');
+});
+
 
 
 // Cart Routes
 
 Route::middleware('auth:api')->prefix('cart')->controller(CartController::class)->group(function () {
+
     Route::get('/', 'show');
+
     Route::post('/add', 'add');
+
     Route::delete('/remove/{productId}', 'remove');
+});
+
+
+
+// Doctor Routes
+
+Route::middleware(['auth:api', 'doctor'])->controller(DoctorController::class)->group(function () {
+
+    Route::get('/doctor/profile', 'myProfile');
 });
