@@ -2,6 +2,7 @@
 
 namespace App\Services\Auth;
 
+use App\Jobs\SendOtpEmailJob;
 use App\Mail\OtpMail;
 use App\Models\OtpVerification;
 use App\Models\User;
@@ -41,7 +42,8 @@ class OtpService
 
     public function sendOtp(User $user, string $otp)
     {
-        Mail::to($user->email)->send(new OtpMail($user, $otp));
+        // Mail::to($user->email)->send(new OtpMail($user, $otp));
+        SendOtpEmailJob::dispatch($user, $otp);
     }
 
 
@@ -74,7 +76,7 @@ class OtpService
                 $otp->delete();
                 return true;
         }
-        
+
         // if (!$otp) {
         //     return false;
         // }
