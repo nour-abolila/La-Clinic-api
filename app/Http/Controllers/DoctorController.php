@@ -6,9 +6,11 @@ use App\Helpers\ApiResponse;
 use App\Http\Requests\Doctor\StoreDoctorRequest;
 use App\Http\Requests\Doctor\UpdateDoctorRequest;
 use App\Http\Resources\DoctorResource;
+use App\Jobs\SendDoctorEmailJob;
 use App\Mail\DoctorMail;
 use App\Models\DoctorProfile;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -41,31 +43,36 @@ class DoctorController extends Controller
 
         $generatedPassword = Str::random(10);
 
-        $user = User::create([
-            'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
-            'email' => $data['email'],
-            'phone_number' => $data['phone_number'],
-            'password' => Hash::make($generatedPassword),
-            'role' => 'doctor',
-            'email_verified_at' => now(),
-        ]);
+        $doctor = DB::transaction(function () use ($data, $generatedPassword) {
 
-        $doctor = $user->doctorProfile()->create([
-            'specialization' => $data['specialization'],
-            'years_of_experience' => $data['years_of_experience'],
-            'bio' => $data['bio'],
-            'session_price' => $data['session_price'],
-            'start_time' => $data['start_time'],
-            'end_time' => $data['end_time'],
-            'working_days' => $data['working_days'],
-        ]);
+            $user = User::create([
+                'first_name'       => $data['first_name'],
+                'last_name'        => $data['last_name'],
+                'email'            => $data['email'],
+                'phone_number'     => $data['phone_number'],
+                'password'         => Hash::make($generatedPassword),
+                'role'             => 'doctor',
+                'email_verified_at' => now(),
+            ]);
 
-        Mail::to($user->email)->send(new DoctorMail($user, $generatedPassword));
+            return $user->doctorProfile()->create([
+                'specialization'      => $data['specialization'],
+                'years_of_experience' => $data['years_of_experience'],
+                'bio'                 => $data['bio'],
+                'session_price'       => $data['session_price'],
+                'start_time'          => $data['start_time'],
+                'end_time'            => $data['end_time'],
+                'working_days'        => $data['working_days'],
+            ]);
+        });
+
+        $doctor->load('user');
+
+        SendDoctorEmailJob::dispatch($doctor->user, $generatedPassword);
 
         return success(
             'Doctor added successfully',
-            new DoctorResource($doctor->load('user'))
+            new DoctorResource($doctor)
         );
     }
 
@@ -102,7 +109,7 @@ class DoctorController extends Controller
     public function destroy(DoctorProfile $doctor)
     {
         $doctor->user->delete();
-        $doctor->delete(); 
+        $doctor->delete();
         return success(
             'Doctor deleted successfully'
         );
